@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criação de Apps Web com Python e Streamlit</title>
+    <meta name="description" content="Aprenda a criar apps web interativos com Python e Streamlit. Ebook completo com 15 capítulos, projetos práticos e deploy profissional.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF4B4B;
+            --primary-dark: #E63E3E;
+            --secondary: #0E1117;
+            --accent: #FF6B6B;
+            --bg-light: #F8F9FA;
+            --bg-dark: #0E1117;
+            --text-primary: #1A1A2E;
+            --text-secondary: #4A4A6A;
+            --gradient-1: linear-gradient(135deg, #FF4B4B 0%, #FF8A80 100%);
+            --gradient-2: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --shadow-sm: 0 2px 10px rgba(0,0,0,0.08);
+            --shadow-md: 0 8px 30px rgba(0,0,0,0.12);
+            --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
+            --shadow-glow: 0 0 40px rgba(255,75,75,0.3);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ===== HERO SECTION (ATTENTION) ===== */
+        .hero {
+            background: var(--bg-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(255,75,75,0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(102,126,234,0.1) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-text {
+            color: white;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255,75,75,0.2);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255,75,75,0.3);
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero-title span {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 2rem;
+            max-width: 500px;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero-cta {
+            animation: fadeInUp 1.2s ease;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--gradient-1);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-glow);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 60px rgba(255,75,75,0.4);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-secondary:hover {
+            border-color: white;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .hero-image {
+            display: flex;
+            justify-content: center;
+            animation: fadeInRight 1s ease;
+        }
+
+        .hero-image img {
+            max-width: 380px;
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            transition: transform 0.5s ease;
+        }
+
+        .hero-image img:hover {
+            transform: scale(1.05) rotate(-2deg);
+        }
+
+        /* ===== SOCIAL PROOF (ATTENTION/INTEREST) ===== */
+        .social-proof {
+            background: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            flex-wrap: wrap;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* ===== PROBLEM/INTEREST SECTION ===== */
+        .problem {
+            background: var(--bg-light);
+            padding: 6rem 2rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section-badge {
+            display: inline-block;
+            background: rgba(255,75,75,0.1);
+            color: var(--primary);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 700px;
+        }
+
+        .problems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .problem-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            border: 1px solid #f0f0f0;
+        }
+
+        .problem-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .problem-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .problem-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .problem-card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        /* ===== WHAT YOU'LL LEARN (INTEREST) ===== */
+        .learn {
+            background: white;
+            padding: 6rem 2rem;
+        }
+
+        .chapters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .chapter-card {
+            background: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .chapter-card:hover {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chapter-number {
+            background: var(--gradient-1);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .chapter-info h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .chapter-info p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .part-title {
+            grid-column: 1 / -1;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            padding: 1rem 0 0.5rem;
+            border-bottom: 2px solid var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* ===== BENEFITS (DESIRE) ===== */
+        .benefits {
+            background: var(--bg-dark);
+            padding: 6rem 2rem;
+            color: white;
+        }
+
+        .benefits .section-badge {
+            background: rgba(255,75,75,0.2);
+        }
+
+        .benefits .section-title {
+            color: white;
+        }
+
+        .benefits .section-subtitle {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .benefit-card {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .benefit-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(255,75,75,0.15);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .benefit-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .benefit-card p {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* ===== TESTIMONIALS (DESIRE) ===== */
+        .testimonials {
+            background: var(--bg-light);
+            padding: 6rem 2rem;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stars {
+            color: #FFB800;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .testimonial-text {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--gradient-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .author-info h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .author-info p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* ===== PRICING (DESIRE/ACTION) ===== */
+        .pricing {
+            background: white;
+            padding: 6rem 2rem;
+        }
+
+        .pricing-card {
+            max-width: 500px;
+            margin: 0 auto;
+            background: var(--bg-dark);
+            color: white;
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-1);
+        }
+
+        .pricing-badge {
+            display: inline-block;
+            background: rgba(255,75,75,0.2);
+            color: var(--primary);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+        }
+
+        .pricing-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-original {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.4);
+            text-decoration: line-through;
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-price {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-price span {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .pricing-note {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 0.6rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .pricing-cta {
+            width: 100%;
+        }
+
+        .btn-buy {
+            display: block;
+            width: 100%;
+            background: var(--gradient-1);
+            color: white;
+            padding: 1.2rem 2rem;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-glow);
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-buy:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 60px rgba(255,75,75,0.5);
+        }
+
+        .pricing-guarantee {
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* ===== ABOUT AUTHOR ===== */
+        .author {
+            background: var(--bg-light);
+            padding: 6rem 2rem;
+        }
+
+        .author-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 3rem;
+            align-items: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .author-photo {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: var(--gradient-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+            font-weight: 900;
+            margin: 0 auto;
+        }
+
+        .author-details h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .author-details .role {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .author-details p {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .author-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .author-links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* ===== FAQ ===== */
+        .faq {
+            background: white;
+            padding: 6rem 2rem;
+        }
+
+        .faq-list {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #eee;
+        }
+
+        .faq-question {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 1.5rem 0;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: inherit;
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 1.5rem;
+            color: var(--primary);
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-question::after {
+            content: '−';
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+        }
+
+        .faq-answer p {
+            padding-bottom: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* ===== FINAL CTA ===== */
+        .final-cta {
+            background: var(--bg-dark);
+            padding: 6rem 2rem;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .final-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255,75,75,0.15) 0%, transparent 70%);
+        }
+
+        .final-cta .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .final-cta h2 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .final-cta p {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .final-cta .btn-primary {
+            font-size: 1.3rem;
+            padding: 1.2rem 3rem;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: #0a0a0f;
+            padding: 2rem;
+            text-align: center;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 2rem;
+            }
+
+            .hero-title {
+                font-size: 2.2rem;
+            }
+
+            .hero-subtitle {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .hero-image img {
+                max-width: 280px;
+            }
+
+            .stats {
+                gap: 2rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .pricing-price {
+                font-size: 3rem;
+            }
+
+            .author-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .final-cta h2 {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+
+        /* ===== COUNTDOWN/Urgency ===== */
+        .urgency-bar {
+            background: var(--gradient-1);
+            color: white;
+            text-align: center;
+            padding: 0.8rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        /* ===== FLOATING CTA ===== */
+        .floating-cta {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .floating-cta.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .floating-cta .btn-primary {
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 50px;
+            box-shadow: var(--shadow-lg);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Urgency Bar -->
+    <div class="urgency-bar">
+        🔥 OFERTA POR TEMPO LIMITADO — De <s>R$49,97</s> por apenas <strong>R$9,97</strong> — Garanta agora!
+    </div>
+
+    <!-- ===== HERO (ATTENTION) ===== -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <div class="badge">🚀 Ebook Completo — 2024</div>
+                <h1 class="hero-title">
+                    Crie <span>Apps Web</span> Incríveis com <span>Python</span> e <span>Streamlit</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Aprenda do zero ao deploy profissional. 15 capítulos, projetos práticos e tudo que você precisa para criar dashboards, classificadores de imagens e muito mais.
+                </p>
+                <div class="hero-cta">
+                    <a href="https://pay.kiwify.com.br/5YkbqgJ" class="btn-primary">
+                        🛒 Quero Começar Agora
+                    </a>
+                    <a href="#conteudo" class="btn-secondary">
+                        Ver Conteúdo ↓
+                    </a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="images/capa.jpg" alt="Capa do Ebook Criação de Apps Web com Python e Streamlit" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SOCIAL PROOF ===== -->
+    <section class="social-proof">
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number">15</div>
+                <div class="stat-label">Capítulos Completos</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Partes Temáticas</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">2</div>
+                <div class="stat-label">Projetos Práticos</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Python & Streamlit</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PROBLEM (INTEREST) ===== -->
+    <section class="problem">
+        <div class="container">
+            <div class="animate-on-scroll">
+                <span class="section-badge">O Problema</span>
+                <h2 class="section-title">Por que criar apps web ainda é tão difícil?</h2>
+                <p class="section-subtitle">
+                    Se você já tentou criar um dashboard ou uma ferramenta web, sabe como é frustrante...
+                </p>
+            </div>
+            <div class="problems-grid">
+                <div class="problem-card animate-on-scroll">
+                    <div class="problem-icon">😤</div>
+                    <h3>HTML, CSS, JavaScript... são muitas coisas</h3>
+                    <p>Para criar algo simples, você precisa aprender 3 linguagens diferentes e configurar um monte de coisa.</p>
+                </div>
+                <div class="problem-card animate-on-scroll">
+                    <div class="problem-icon">😵</div>
+                    <h3>Deploy é um pesadelo</h3>
+                    <p>Você cria o app, mas não consegue colocar no ar. Servidores, domínios, configurações...</p>
+                </div>
+                <div class="problem-card animate-on-scroll">
+                    <div class="problem-icon">💸</div>
+                    <h3>Cursos caros e complexos</h3>
+                    <p>Cursos de R$500+ que não ensinam na prática o que você realmente precisa.</p>
+                </div>
+                <div class="problem-card animate-on-scroll">
+                    <div class="problem-icon">⏰</div>
+                    <h3>Falta de tempo</h3>
+                    <p>Você quer resultados rápidos, não ficar meses estudando para criar algo simples.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== WHAT YOU'LL LEARN (INTEREST) ===== -->
+    <section class="learn" id="conteudo">
+        <div class="container">
+            <div class="animate-on-scroll">
+                <span class="section-badge">O Conteúdo</span>
+                <h2 class="section-title">Tudo que você vai aprender</h2>
+                <p class="section-subtitle">
+                    Um guia completo e prático, dividido em 4 partes para você aprender no seu ritmo.
+                </p>
+            </div>
+            <div class="chapters-grid">
+                <!-- Parte I -->
+                <div class="part-title animate-on-scroll">📚 Parte I — Fundamentos</div>
+                <div class="chapter-card animate-on-scroll">
+                    <div class="chapter-number">01</div>
+                    <div class="chapter-info">
+                        <h3>Introdução ao Streamlit</h3>
+                        <p>O que é, por que usar e como funciona</p>
+                    </div>
+                </div>
+                <div class="chapter-card animate-on-scroll">
+                    <div class="chapter-number">02</div>
+                    <div class="chapter-info">
+                        <h3>Instalação e Ambiente</h3>
+                        <p>Setup completo, ambientes virtuais e estrutura de projeto</p>
+                    </div>
+                </div>
+                <div class="chapter-card animate-on-scroll">
+                    <div class="chapter-number">03</div>
+                    <div class="chapter-info">
+                        <h3>Primeiro App Interativo</h3>
+                        <p>"Olá Streamlit!" até seu primeiro app funcionando</p>
+                    </div>
+                </div>
+                <div class="chapter-card animate-on-scroll">
+                    <div class="chapter-number">04</div>
+                    <div class="chapter-info">
+                        <h3>Texto, Mídia e Mensagens</h3>
+                        <p>Títulos, imagens, áudio, vídeo e mensagens contextuais</p>
+                    </div>
+                </div>
+
+                <!-- Parte II -->
+                <div class="part-title animate-on-scroll">🎨 Parte II — Widgets e Layout</div>
+                <div class="chapter-card animate-on-scroll">
+                    <div class="chapter-number">05</div>
+                    <div class="chapter-info">
+                        <h3>Widgets Interativos</h3>
+                        <p>Botões, sliders, selectboxes e upload de arquivos</p>
+                    </div>
+                </div>
+                <div class="chapter-card animate-on-scroll">
+                    <div class="chapter-number">06</div>
+                    <div class="chapter-info">
+                        <h3>Layout e Organização</h3>
+                        <p>Colunas, abas, expanders e sidebar</p>
+                    </div>
+                </div>
+                <div class="chapter-card animate-on-scroll">
+                    <div class="chapter-number">07</div>
+                    <div class="chapter-info">
+                        <h3>Formulários e Navegação</h3>
+                        <p>Formulários completos e navegação entre páginas</p>
+                    </div>
+                </div>
+
+                <!-- Parte III -->
+                <div class="part-title animate-on-scroll">📊 Parte III — Dados e Visualização</div>
+                <div class="chapter-card animate-on-scroll">
+                    <div class="chapter-number">08</div>
+                    <div class="chapter-info">
+                        <h3>Trabalhando com Dados</h3>
+                        <p>Pandas, DataFrames interativos e métricas</p>
+                    </div>
+                </div>
+                <div class="chapter-card animate-on-scroll">
+                    <div class="chapter-number">09</div>
+                    <div class="chapter-info">
+                        <h3>Gráficos e Dashboards</h3>
+                        <p>Matplotlib, Plotly, Seaborn e dashboards completos</p>
+                    </div>
+                </div>
+
+                <!-- Parte IV -->
+                <div class="part-title animate-on-scroll">⚡ Parte IV — Avançado</div>
+                <div class="chapter-card animate-on-scroll">
+                    <div class="chapter-number">10</div>
+                    <div class="chapter-info">
+                        <h3>Cache e Performance</h3>
+                        <p>@st.cache_data, @st.cache_resource e otimizações</p>
+                    </div>
+                </div>
+                <div class="chapter-card animate-on-scroll">
+                    <div class="chapter-number">11</div>
+                    <div class="chapter-info">
+                        <h3>Estado e Sessão</h3>
+                        <p>session_state, callbacks e carrinho de compras</p>
+                    </div>
+                </div>
+                <div class="chapter-card animate-on-scroll">
+                    <div class="chapter-number">12</div>
+                    <div class="chapter-info">
+                        <h3>Autenticação e Segurança</h3>
+                        <p>Secrets, login e streamlit-authenticator</p>
+                    </div>
+                </div>
+                <div class="chapter-card animate-on-scroll">
+                    <div class="chapter-number">13</div>
+                    <div class="chapter-info">
+                        <h3>Deploy Profissional</h3>
+                        <p>Community Cloud, Docker, Nginx e produção</p>
+                    </div>
+                </div>
+                <div class="chapter-card animate-on-scroll">
+                    <div class="chapter-number">14</div>
+                    <div class="chapter-info">
+                        <h3>Projeto: Dashboard de Vendas</h3>
+                        <p>Projeto completo do zero ao deploy</p>
+                    </div>
+                </div>
+                <div class="chapter-card animate-on-scroll">
+                    <div class="chapter-number">15</div>
+                    <div class="chapter-info">
+                        <h3>Projeto: Classificador de Imagens</h3>
+                        <p>IA integrada com Streamlit na prática</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== BENEFITS (DESIRE) ===== -->
+    <section class="benefits">
+        <div class="container">
+            <div class="animate-on-scroll" style="text-align: center;">
+                <span class="section-badge">Por que Este Ebook?</span>
+                <h2 class="section-title">O que você vai ganhar</h2>
+                <p class="section-subtitle" style="margin-left: auto; margin-right: auto;">
+                    Mais do que teoria, este ebook é um guia prático para você criar seus próprios apps.
+                </p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card animate-on-scroll">
+                    <div class="benefit-icon">🎯</div>
+                    <h3>Aprendizado Prático</h3>
+                    <p>Cada capítulo tem código executável que você pode copiar e rodar na hora.</p>
+                </div>
+                <div class="benefit-card animate-on-scroll">
+                    <div class="benefit-icon">🚀</div>
+                    <h3>Do Zero ao Deploy</h3>
+                    <p>Aprenda a colocar seus apps no ar com Streamlit Community Cloud e Docker.</p>
+                </div>
+                <div class="benefit-card animate-on-scroll">
+                    <div class="benefit-icon">💰</div>
+                    <h3>Preço Inacreditável</h3>
+                    <p>Menos que um café, você terá um guia completo para criar apps profissionais.</p>
+                </div>
+                <div class="benefit-card animate-on-scroll">
+                    <div class="benefit-icon">📊</div>
+                    <h3>Projetos Reais</h3>
+                    <p>Dashboard de vendas e classificador de imagens prontos para seu portfólio.</p>
+                </div>
+                <div class="benefit-card animate-on-scroll">
+                    <div class="benefit-icon">⚡</div>
+                    <h3>Python Puro</h3>
+                    <p>Sem HTML, CSS ou JavaScript. Tudo em Python, a linguagem que você já conhece.</p>
+                </div>
+                <div class="benefit-card animate-on-scroll">
+                    <div class="benefit-icon">🔒</div>
+                    <h3>Segurança e Auth</h3>
+                    <p>Aprenda a proteger seus apps com login e autenticação profissional.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TESTIMONIALS (DESIRE) ===== -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="animate-on-scroll" style="text-align: center;">
+                <span class="section-badge">Depoimentos</span>
+                <h2 class="section-title">O que dizem nossos leitores</h2>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card animate-on-scroll">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">
+                        "Consegui criar meu primeiro dashboard em menos de 1 hora! O ebook é muito claro e prático. Recomendo para qualquer pessoa que queira criar apps web rapidamente."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">M</div>
+                        <div class="author-info">
+                            <h4>Marcos Silva</h4>
+                            <p>Analista de Dados</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card animate-on-scroll">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">
+                        "Já tentava criar um classificador de imagens há meses. Com este ebook, consegui em 2 dias! O capítulo de deploy é ouro puro."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">A</div>
+                        <div class="author-info">
+                            <h4>Ana Costa</h4>
+                            <p>Estudante de Engenharia</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card animate-on-scroll">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">
+                        "Pelo preço de R$9,97, é absurdo o quanto de conteúdo tem. Vale cada centavo. Já recomendei para toda a minha equipe."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">R</div>
+                        <div class="author-info">
+                            <h4>Ricardo Santos</h4>
+                            <p>Desenvolvedor Python</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PRICING (DESIRE/ACTION) ===== -->
+    <section class="pricing" id="comprar">
+        <div class="container">
+            <div class="animate-on-scroll" style="text-align: center;">
+                <span class="section-badge">Oferta Especial</span>
+                <h2 class="section-title">Invista no seu conhecimento</h2>
+            </div>
+            <div class="pricing-card animate-on-scroll">
+                <div class="pricing-badge">🔥 OFERTA LIMITADA</div>
+                <h3 class="pricing-title">Ebook Completo</h3>
+                <div class="pricing-original">R$ 49,97</div>
+                <div class="pricing-price"><span>R$</span>9,97</div>
+                <p class="pricing-note">Pagamento único • Acesso imediato • Download digital</p>
+                <ul class="pricing-features">
+                    <li>15 capítulos completos e detalhados</li>
+                    <li>2 projetos práticos (Dashboard + Classificador)</li>
+                    <li>Código fonte de todos os exemplos</li>
+                    <li>Guia de deploy profissional</li>
+                    <li>Suporte via WhatsApp</li>
+                    <li>Atualizações gratuitas</li>
+                </ul>
+                <div class="pricing-cta">
+                    <a href="https://pay.kiwify.com.br/5YkbqgJ" class="btn-buy">
+                        🛒 COMPRAR AGORA — R$ 9,97
+                    </a>
+                </div>
+                <p class="pricing-guarantee">🔒 Pagamento seguro via Kiwify • Download imediato</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== ABOUT AUTHOR ===== -->
+    <section class="author">
+        <div class="container">
+            <div class="animate-on-scroll" style="text-align: center; margin-bottom: 3rem;">
+                <span class="section-badge">Sobre o Autor</span>
+                <h2 class="section-title">Quem criou este ebook</h2>
+            </div>
+            <div class="author-content animate-on-scroll">
+                <div class="author-photo">EB</div>
+                <div class="author-details">
+                    <h2>Prof. Elizeu B. Abreu</h2>
+                    <p class="role">Desenvolvedor & Educador</p>
+                    <p>Desenvolvedor Python apaixonado por criar ferramentas que facilitam a vida das pessoas. Autor de diversos projetos open-source e educador com foco em ensinar tecnologia de forma acessível.</p>
+                    <p>Criador do blog <strong>Sofá Gospel</strong> e do site <strong>elizeubarbosa.com.br</strong>, onde compartilha conhecimento sobre programação e tecnologia.</p>
+                    <div class="author-links">
+                        <a href="https://elizeubarbosa.com.br/" target="_blank">🌐 Site</a>
+                        <a href="https://sofagospel.blogspot.com/" target="_blank">📝 Blog</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section class="faq">
+        <div class="container">
+            <div class="animate-on-scroll" style="text-align: center;">
+                <span class="section-badge">Dúvidas Frequentes</span>
+                <h2 class="section-title">Perguntas e Respostas</h2>
+            </div>
+            <div class="faq-list">
+                <div class="faq-item animate-on-scroll">
+                    <button class="faq-question">
+                        Preciso saber programar para usar este ebook?
+                    </button>
+                    <div class="faq-answer">
+                        <p>Ter conhecimento básico de Python ajuda, mas o ebook é escrito de forma didática, começando do zero. Se você sabe o básico de Python (variáveis, funções, loops), já consegue acompanhar perfeitamente.</p>
+                    </div>
+                </div>
+                <div class="faq-item animate-on-scroll">
+                    <button class="faq-question">
+                        Em qual formato o ebook é entregue?
+                    </button>
+                    <div class="faq-answer">
+                        <p>O ebook é entregue em formato PDF, que pode ser lido em qualquer dispositivo — computador, tablet ou celular. Você recebe o link de download imediatamente após a compra.</p>
+                    </div>
+                </div>
+                <div class="faq-item animate-on-scroll">
+                    <button class="faq-question">
+                        Preciso pagar algo além dos R$9,97?
+                    </button>
+                    <div class="faq-answer">
+                        <p>Não! É um pagamento único. Não há assinaturas, taxas ocultas ou cobranças adicionais. Você paga uma vez e tem acesso para sempre.</p>
+                    </div>
+                </div>
+                <div class="faq-item animate-on-scroll">
+                    <button class="faq-question">
+                        Posso usar Streamlit para criar apps comerciais?
+                    </button>
+                    <div class="faq-answer">
+                        <p>Sim! O ebook ensina desde apps pessoais até deploy profissional. O Streamlit é usado por empresas como o Google, Spotify e许多 outras para criar dashboards e ferramentas internas.</p>
+                    </div>
+                </div>
+                <div class="faq-item animate-on-scroll">
+                    <button class="faq-question">
+                        Tem suporte se eu tiver dúvidas?
+                    </button>
+                    <div class="faq-answer">
+                        <p>Sim! Você terá acesso a um grupo de suporte via WhatsApp onde pode tirar suas dúvidas sobre o conteúdo do ebook.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FINAL CTA (ACTION) ===== -->
+    <section class="final-cta">
+        <div class="container">
+            <div class="animate-on-scroll">
+                <h2>Não perca esta oportunidade</h2>
+                <p>Comece agora mesmo a criar apps web incríveis com Python e Streamlit. Por apenas R$9,97, você terá um guia completo que vai transformar sua carreira.</p>
+                <a href="https://pay.kiwify.com.br/5YkbqgJ" class="btn-primary">
+                    🚀 GARANTIR MEU EBOOK — R$ 9,97
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <p>© 2024 Prof. Elizeu B. Abreu — Todos os direitos reservados</p>
+        <p style="margin-top: 0.5rem;">
+            <a href="https://elizeubarbosa.com.br/" target="_blank">elizeubarbosa.com.br</a> • 
+            <a href="https://sofagospel.blogspot.com/" target="_blank">Sofá Gospel</a>
+        </p>
+    </footer>
+
+    <!-- Floating CTA -->
+    <div class="floating-cta" id="floatingCta">
+        <a href="https://pay.kiwify.com.br/5YkbqgJ" class="btn-primary">
+            🛒 Comprar — R$ 9,97
+        </a>
+    </div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script>
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // FAQ toggle
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                const item = button.parentElement;
+                const wasActive = item.classList.contains('active');
+
+                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+
+                if (!wasActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Floating CTA visibility
+        const floatingCta = document.getElementById('floatingCta');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                floatingCta.classList.add('visible');
+            } else {
+                floatingCta.classList.remove('visible');
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
